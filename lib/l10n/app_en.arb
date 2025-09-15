@@ -1,0 +1,25 @@
+{
+  "appTitle": "Smart Todo",
+
+  "onboardingOrganizeLife": "Organize Your Life",
+  "loading": "Loading...",
+
+  "authLogin": "Login",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authLoginWithGoogle": "Login With Google",
+  "authDontHaveAccount": "Don't have an account?",
+  "authRegister": "Register",
+  "authBackToLogin": "Back To Login",
+
+  "validationEmailRequired": "Email is required",
+  "validationEmailInvalid": "Enter a valid email address",
+  "validationPasswordRequired": "Password is required",
+  "validationConfirmPasswordRequired": "Confirm Password is required",
+  "validationPasswordConfirmPasswordDoNotMatched": "Password and confirm password do not match",
+  "validationPasswordMinLength": "Password must be at least 6 characters",
+  "validationNameRequired": "Name is required",
+
+  "formName": "Name",
+  "formConfirmPassword": "Confirm Password"
+}

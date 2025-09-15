@@ -1,0 +1,25 @@
+{
+  "appTitle": "المهام الذكية",
+
+  "onboardingOrganizeLife": "نظّم حياتك",
+  "loading": "جاري التحميل...",
+
+  "authLogin": "تسجيل الدخول",
+  "authEmail": "البريد الإلكتروني",
+  "authPassword": "كلمة المرور",
+  "authLoginWithGoogle": "تسجيل الدخول باستخدام جوجل",
+  "authDontHaveAccount": "ليس لديك حساب؟",
+  "authRegister": "إنشاء حساب",
+  "authBackToLogin": "العودة لتسجيل الدخول",
+
+  "validationEmailRequired": "البريد الإلكتروني مطلوب",
+  "validationEmailInvalid": "الرجاء إدخال بريد إلكتروني صحيح",
+  "validationPasswordRequired": "كلمة المرور مطلوبة",
+  "validationConfirmPasswordRequired": "Confirm Password is required",
+  "validationPasswordConfirmPasswordDoNotMatched": "Password and confirm password do not match",
+  "validationPasswordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+  "validationNameRequired": "الاسم مطلوب",
+
+  "formName": "الاسم",
+  "formConfirmPassword": "تأكيد كلمة المرور"
+}
