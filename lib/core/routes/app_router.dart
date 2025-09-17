@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/features/auth/presentation/login/screens/login_screen.dart';
 import 'package:smart_todo/features/auth/presentation/signup/screens/signup_screen.dart';
 import 'package:smart_todo/features/home/presentation/home_screen.dart';
@@ -16,7 +17,7 @@ class AppRouter {
     navigatorKey: rootNavigatorKey,
     routes: <RouteBase>[
       GoRoute(
-        path: '/',
+        path: AppRoutes.splash,
         builder: (BuildContext context, GoRouterState state) {
           return const SplashScreen(
             delay: Duration(seconds: 5),
@@ -25,19 +26,19 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/home',
+        path: AppRoutes.home,
         builder: (BuildContext context, GoRouterState state) {
           return const HomeScreen();
         },
       ),
       GoRoute(
-        path: '/login',
+        path: AppRoutes.login,
         builder: (BuildContext context, GoRouterState state) {
           return const LoginScreen();
         },
       ),
       GoRoute(
-        path: '/register',
+        path: AppRoutes.register,
         builder: (BuildContext context, GoRouterState state) {
           return const SignUpScreen();
         },

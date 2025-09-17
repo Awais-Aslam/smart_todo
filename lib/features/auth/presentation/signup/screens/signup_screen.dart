@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_todo/core/constants/app_constants.dart';
 import 'package:smart_todo/core/extensions/context_extension.dart';
+import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/signup/bloc/signup_bloc.dart';
 import 'package:smart_todo/features/auth/presentation/signup/widgets/signup_form.dart';
@@ -51,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: BlocConsumer<SignupBloc, SignupState>(
         listener: (context, state) {
           if (state is SignupSuccess) {
-            context.go('/home');
+            context.go(AppRoutes.home);
           } else if (state is SignupError) {
             AppSnackbar.showError(
               context,
