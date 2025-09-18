@@ -1,13 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
+import 'package:smart_todo/core/di/injection.dart';
 import 'package:smart_todo/core/routes/app_router.dart';
 import 'package:smart_todo/core/theme/app_theme.dart';
-import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:smart_todo/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:smart_todo/features/auth/presentation/signup/bloc/signup_bloc.dart';
 import 'package:smart_todo/firebase_options.dart';
 import 'package:smart_todo/l10n/l10n.dart';
@@ -17,6 +14,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await setupDependencies();
+
   runApp(const MyApp());
 }
 
@@ -29,17 +29,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<LocaleBloc>(
-          create: (BuildContext context) => LocaleBloc(),
-        ),
-        RepositoryProvider<AuthRepository>(
-          create: (BuildContext context) => AuthRepositoryImpl(
-            AuthRemoteDataSourceImpl(FirebaseAuth.instance),
-          ),
+          create: (context) => getIt<LocaleBloc>(),
         ),
         BlocProvider<SignupBloc>(
-          create: (BuildContext context) => SignupBloc(
-            authRepository: context.read<AuthRepository>(),
-          ),
+          create: (BuildContext context) => getIt<SignupBloc>(),
         ),
       ],
       child: BlocBuilder<LocaleBloc, LocaleState>(
