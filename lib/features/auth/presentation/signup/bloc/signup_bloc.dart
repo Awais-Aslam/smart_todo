@@ -23,17 +23,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   ) async {
     emit(SignupLoading());
 
-    await Future.delayed(const Duration(seconds: 5), () {
-      emit(SignupError(message: 'Something went wrong'));
-    });
-
     // Call the use case
-    // final result = await signUpUser(event.email, event.password);
+    final result = await signUpUser(event.email, event.password);
 
-    // if (result.isSuccess) {
-    //   emit(SignupSuccess(userEntity: result.data!));
-    // } else {
-    //   emit(SignupError(message: result.error!));
-    // }
+    if (result.isSuccess) {
+      emit(SignupSuccess(userEntity: result.data!));
+    } else {
+      emit(SignupError(message: result.error!));
+    }
   }
 }

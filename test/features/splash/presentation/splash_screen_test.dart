@@ -1,8 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_todo/features/splash/presentation/screens/splash_screen.dart';
+import 'package:smart_todo/l10n/l10n.dart';
+
+import 'mock.dart';
 
 void main() {
+  setupFirebaseAuthMocks();
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+  });
+
   group(
     'Splash Screen Widget Testing',
     () {
@@ -11,6 +22,8 @@ void main() {
         (tester) async {
           await tester.pumpWidget(
             const MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
               home: SplashScreen(
                 delay: Duration(seconds: 5),
                 enableNavigation: false,
@@ -27,6 +40,8 @@ void main() {
         (tester) async {
           await tester.pumpWidget(
             const MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
               home: SplashScreen(
                 delay: Duration(seconds: 5),
                 enableNavigation: false,

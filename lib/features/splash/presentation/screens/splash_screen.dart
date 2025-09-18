@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_todo/core/constants/app_colors.dart';
@@ -88,9 +89,9 @@ class _SplashScreenState extends State<SplashScreen>
     _startAnimations();
 
     // Navigate to next screen after delay
-    if (widget.enableNavigation) {
-      _navigateToNext();
-    }
+    // if (widget.enableNavigation) {
+    //   _navigateToNext();
+    // }
   }
 
   void _startAnimations() async {
@@ -99,9 +100,14 @@ class _SplashScreenState extends State<SplashScreen>
     await _fadeController.forward();
   }
 
-  void _navigateToNext() async {
+  void _navigateToNext(User? user) async {
     await Future.delayed(widget.delay);
-    if (mounted) {
+
+    if (!mounted) return;
+
+    if (user != null) {
+      context.go(AppRoutes.home);
+    } else {
       context.go(AppRoutes.login);
     }
   }
@@ -117,123 +123,133 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppColors.primaryGradient,
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo Animation
-                AnimatedBuilder(
-                  animation: _logoController,
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: _logoScale.value,
-                      child: Transform.rotate(
-                        angle: _logoRotation.value * 0.1,
-                        child: Container(
-                          width: AppConstants.containerWidth120,
-                          height: AppConstants.containerHeight120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              colors: [
-                                AppColors.white,
-                                AppColors.lightGrey,
+      body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (widget.enableNavigation) {
+                _navigateToNext(snapshot.data);
+              }
+            }
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: AppColors.primaryGradient,
+                ),
+              ),
+              child: SafeArea(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo Animation
+                      AnimatedBuilder(
+                        animation: _logoController,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: _logoScale.value,
+                            child: Transform.rotate(
+                              angle: _logoRotation.value * 0.1,
+                              child: Container(
+                                width: AppConstants.containerWidth120,
+                                height: AppConstants.containerHeight120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      AppColors.white,
+                                      AppColors.lightGrey,
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.black.withOpacity(0.2),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.task_alt_rounded,
+                                  size: AppConstants.icon64,
+                                  color: AppColors.blue,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: AppConstants.spacing40),
+
+                      // App Name Animation
+                      AnimatedBuilder(
+                        animation: _textController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, _textSlide.value),
+                            child: Column(
+                              children: [
+                                Text(
+                                  context.appStrings.appTitle,
+                                  style:
+                                      context.textTheme.headlineLarge?.copyWith(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: AppConstants.spacing8),
+                                Text(
+                                  context.appStrings.onboardingOrganizeLife,
+                                  style: context.textTheme.titleSmall?.copyWith(
+                                    color: AppColors.white.withOpacity(0.7),
+                                  ),
+                                ),
                               ],
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.black.withOpacity(0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.task_alt_rounded,
-                            size: AppConstants.icon64,
-                            color: AppColors.blue,
-                          ),
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
 
-                const SizedBox(height: AppConstants.spacing40),
+                      const SizedBox(height: AppConstants.spacing64),
 
-                // App Name Animation
-                AnimatedBuilder(
-                  animation: _textController,
-                  builder: (context, child) {
-                    return Transform.translate(
-                      offset: Offset(0, _textSlide.value),
-                      child: Column(
-                        children: [
-                          Text(
-                            context.appStrings.appTitle,
-                            style: context.textTheme.headlineLarge?.copyWith(
-                              color: AppColors.white,
+                      // Loading Animation
+                      AnimatedBuilder(
+                        animation: _fadeController,
+                        builder: (context, child) {
+                          return Opacity(
+                            opacity: _fadeAnimation.value,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: AppConstants.containerWidth32,
+                                  height: AppConstants.containerHeight32,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.white.withOpacity(0.8),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: AppConstants.spacing16),
+                                Text(
+                                  context.appStrings.loading,
+                                  style: context.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.white.withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: AppConstants.spacing8),
-                          Text(
-                            context.appStrings.onboardingOrganizeLife,
-                            style: context.textTheme.titleSmall?.copyWith(
-                              color: AppColors.white.withOpacity(0.7),
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-
-                const SizedBox(height: AppConstants.spacing64),
-
-                // Loading Animation
-                AnimatedBuilder(
-                  animation: _fadeController,
-                  builder: (context, child) {
-                    return Opacity(
-                      opacity: _fadeAnimation.value,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: AppConstants.containerWidth32,
-                            height: AppConstants.containerHeight32,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.white.withOpacity(0.8),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: AppConstants.spacing16),
-                          Text(
-                            context.appStrings.loading,
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.white.withOpacity(0.7),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
     );
   }
 }

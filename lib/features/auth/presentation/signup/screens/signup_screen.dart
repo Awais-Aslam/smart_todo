@@ -51,41 +51,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: BlocConsumer<SignupBloc, SignupState>(
         listener: (context, state) {
-          if (state is SignupSuccess) {
-            context.go(AppRoutes.home);
-          } else if (state is SignupError) {
-            AppSnackbar.showError(
-              context,
-              state.message,
-            );
+          switch (state) {
+            case SignupSuccess():
+              context.go(AppRoutes.home);
+              break;
+            case SignupError():
+              AppSnackbar.showError(context, state.message);
+              break;
+            case _:
+              // Do nothing for SignupInitial, SignupLoading, etc.
+              break;
           }
         },
         builder: (context, state) {
-          if (state is SignupLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return GestureDetector(
-            onTap: () {
-              context.hideKeyboard();
-            },
-            child: Padding(
-              padding: AppConstants.paddingHorizontal16,
-              child: SingleChildScrollView(
-                child: Center(
-                  child: SignUpForm(
-                    nameController: nameController,
-                    emailController: emailController,
-                    passwordController: passwordController,
-                    confirmPasswordController: confirmPasswordController,
-                    formKey: formKey,
-                    onRegister: _registerUser,
+          switch (state) {
+            case SignupLoading():
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case _:
+              return GestureDetector(
+                onTap: () {
+                  context.hideKeyboard();
+                },
+                child: Padding(
+                  padding: AppConstants.paddingHorizontal16,
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: SignUpForm(
+                        nameController: nameController,
+                        emailController: emailController,
+                        passwordController: passwordController,
+                        confirmPasswordController: confirmPasswordController,
+                        formKey: formKey,
+                        onRegister: _registerUser,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
+              );
+          }
         },
       ),
     );

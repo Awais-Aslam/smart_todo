@@ -1,11 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
+import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:smart_todo/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:smart_todo/features/auth/presentation/login/screens/login_screen.dart';
+import 'package:smart_todo/features/auth/presentation/signup/bloc/signup_bloc.dart';
 import 'package:smart_todo/features/auth/presentation/signup/screens/signup_screen.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
+import '../../../../splash/presentation/mock.dart';
+
 void main() {
+  setupFirebaseAuthMocks();
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+  });
+
   testWidgets(
     'signup screen widget tests',
     (tester) async {
@@ -28,10 +45,27 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp.router(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: testRouter,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider<LocaleBloc>(
+              create: (BuildContext context) => LocaleBloc(),
+            ),
+            RepositoryProvider<AuthRepository>(
+              create: (BuildContext context) => AuthRepositoryImpl(
+                AuthRemoteDataSourceImpl(FirebaseAuth.instance),
+              ),
+            ),
+            BlocProvider<SignupBloc>(
+              create: (BuildContext context) => SignupBloc(
+                authRepository: context.read<AuthRepository>(),
+              ),
+            ),
+          ],
+          child: MaterialApp.router(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: testRouter,
+          ),
         ),
       );
 
