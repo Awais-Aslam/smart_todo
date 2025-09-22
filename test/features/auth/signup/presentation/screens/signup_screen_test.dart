@@ -9,7 +9,7 @@ import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_sourc
 import 'package:smart_todo/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:smart_todo/features/auth/presentation/login/screens/login_screen.dart';
-import 'package:smart_todo/features/auth/presentation/signup/bloc/signup_bloc.dart';
+import 'package:smart_todo/features/auth/presentation/signup/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/auth/presentation/signup/screens/signup_screen.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
@@ -55,8 +55,8 @@ void main() {
                 AuthRemoteDataSourceImpl(FirebaseAuth.instance),
               ),
             ),
-            BlocProvider<SignupBloc>(
-              create: (BuildContext context) => SignupBloc(
+            BlocProvider<AuthBloc>(
+              create: (BuildContext context) => AuthBloc(
                 authRepository: context.read<AuthRepository>(),
               ),
             ),

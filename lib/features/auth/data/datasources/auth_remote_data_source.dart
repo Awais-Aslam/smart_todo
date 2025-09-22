@@ -7,6 +7,8 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+
+  Future<void> logoutUser();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -32,7 +34,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
     } on FirebaseAuthException catch (e) {
       throw AuthServerException(message: e.message ?? 'Auth failed');
-      // return Result.failure(e.toString());
+    }
+  }
+
+  @override
+  Future<void> logoutUser() async {
+    try {
+      await firebaseAuth.signOut();
+    } on FirebaseAuthException catch (e) {
+      throw AuthServerException(message: e.message ?? 'Auth failed');
     }
   }
 }

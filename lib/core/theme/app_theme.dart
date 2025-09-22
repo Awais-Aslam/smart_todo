@@ -7,6 +7,7 @@ import 'package:smart_todo/core/theme/custom_theme/chip_theme.dart';
 import 'package:smart_todo/core/theme/custom_theme/elevated_button_theme.dart';
 import 'package:smart_todo/core/theme/custom_theme/outline_button_theme.dart';
 import 'package:smart_todo/core/theme/custom_theme/snakbar_theme.dart';
+import 'package:smart_todo/core/theme/custom_theme/text_button_theme.dart';
 import 'package:smart_todo/core/theme/custom_theme/text_field_theme.dart';
 import 'package:smart_todo/core/theme/custom_theme/text_theme.dart';
 
@@ -36,6 +37,7 @@ class TAppTheme {
       color: AppColors.primaryPurple,
     ),
     snackBarTheme: SnakbarTheme.lightSnakBarTheme,
+    textButtonTheme: TTextButtonTheme.lightTextButtonTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -61,5 +63,6 @@ class TAppTheme {
       color: AppColors.primaryPurple,
     ),
     snackBarTheme: SnakbarTheme.darkSnakBarTheme,
+    textButtonTheme: TTextButtonTheme.darkTextButtonTheme,
   );
 }

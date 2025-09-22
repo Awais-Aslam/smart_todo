@@ -5,7 +5,7 @@ import 'package:smart_todo/core/constants/app_constants.dart';
 import 'package:smart_todo/core/extensions/context_extension.dart';
 import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
-import 'package:smart_todo/features/auth/presentation/signup/bloc/signup_bloc.dart';
+import 'package:smart_todo/features/auth/presentation/signup/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/auth/presentation/signup/widgets/signup_form.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -37,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       context.hideKeyboard();
 
-      context.read<SignupBloc>().add(
+      context.read<AuthBloc>().add(
             SignupButtonPressed(
               email: emailController.text.trim(),
               password: passwordController.text.trim(),
@@ -49,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<SignupBloc, SignupState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           switch (state) {
             case SignupSuccess():
@@ -65,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         },
         builder: (context, state) {
           switch (state) {
-            case SignupLoading():
+            case AuthLoading():
               return const Center(
                 child: CircularProgressIndicator(),
               );
