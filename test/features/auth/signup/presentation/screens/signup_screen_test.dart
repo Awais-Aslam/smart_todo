@@ -8,9 +8,9 @@ import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
 import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:smart_todo/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
-import 'package:smart_todo/features/auth/presentation/login/screens/login_screen.dart';
-import 'package:smart_todo/features/auth/presentation/signup/bloc/auth_bloc.dart';
-import 'package:smart_todo/features/auth/presentation/signup/screens/signup_screen.dart';
+import 'package:smart_todo/features/auth/presentation/screens/login_screen.dart';
+import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/auth/presentation/screens/signup_screen.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
 import '../../../../splash/presentation/mock.dart';

@@ -42,6 +42,7 @@ void main() {
           final result = await authRepositoryImpl.registerUser(
             email: '',
             password: '',
+            username: '',
           );
 
           expect(result, isA<Result<UserEntity>>());
@@ -70,6 +71,7 @@ void main() {
           final result = await authRepositoryImpl.registerUser(
             email: '',
             password: '',
+            username: '',
           );
 
           // assert

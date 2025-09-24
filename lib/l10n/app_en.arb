@@ -11,7 +11,9 @@
   "authDontHaveAccount": "Don't have an account?",
   "authRegister": "Register",
   "authBackToLogin": "Back To Login",
-
+  "authWelcomeBack": "Welcome Back",
+  "authCreateAccount": "Create Account",
+  
   "validationEmailRequired": "Email is required",
   "validationEmailInvalid": "Enter a valid email address",
   "validationPasswordRequired": "Password is required",

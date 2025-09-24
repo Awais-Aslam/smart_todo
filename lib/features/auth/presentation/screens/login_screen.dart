@@ -1,44 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smart_todo/core/constants/app_colors.dart';
 import 'package:smart_todo/core/constants/app_constants.dart';
 import 'package:smart_todo/core/extensions/context_extension.dart';
 import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
-import 'package:smart_todo/features/auth/presentation/signup/bloc/auth_bloc.dart';
-import 'package:smart_todo/features/auth/presentation/signup/widgets/signup_form.dart';
+import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/auth/presentation/widgets/login_form.dart';
+import 'package:smart_todo/l10n/l10n.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final nameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmPasswordController.dispose();
     super.dispose();
   }
 
-  Future<void> _registerUser() async {
+  Future<void> _loginUser() async {
     if (formKey.currentState!.validate()) {
-      debugPrint('SignupButtonPressed');
-
-      context.hideKeyboard();
-
       context.read<AuthBloc>().add(
-            SignupButtonPressed(
+            LoginButtonPressed(
               email: emailController.text.trim(),
               password: passwordController.text.trim(),
             ),
@@ -49,17 +43,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          context.appStrings.authWelcomeBack,
+          style: context.textTheme.headlineMedium?.copyWith(
+            color: AppColors.white,
+          ),
+        ),
+      ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           switch (state) {
-            case SignupSuccess():
+            case LoginSuccess():
               context.go(AppRoutes.home);
               break;
-            case SignupError():
+            case LoginError():
               AppSnackbar.showError(context, state.message);
               break;
             case _:
-              // Do nothing for SignupInitial, SignupLoading, etc.
               break;
           }
         },
@@ -78,13 +79,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: AppConstants.paddingHorizontal16,
                   child: SingleChildScrollView(
                     child: Center(
-                      child: SignUpForm(
-                        nameController: nameController,
+                      child: LoginForm(
                         emailController: emailController,
                         passwordController: passwordController,
-                        confirmPasswordController: confirmPasswordController,
                         formKey: formKey,
-                        onRegister: _registerUser,
+                        onLogin: _loginUser,
                       ),
                     ),
                   ),

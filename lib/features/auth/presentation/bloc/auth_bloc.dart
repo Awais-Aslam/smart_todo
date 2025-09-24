@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
+import 'package:smart_todo/features/auth/domain/usecases/login_user.dart';
 import 'package:smart_todo/features/auth/domain/usecases/logout_user.dart';
 import 'package:smart_todo/features/auth/domain/usecases/signup_user.dart';
 
@@ -12,13 +13,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
   final SignUpUser signUpUser;
   final LogoutUser logoutUser;
+  final LoginUser loginUser;
 
   AuthBloc({required this.authRepository})
       : signUpUser = SignUpUser(authRepository),
         logoutUser = LogoutUser(authRepository),
+        loginUser = LoginUser(authRepository),
         super(AuthInitial()) {
     on<SignupButtonPressed>(_signupButtonPressedEventHandler);
     on<LogoutButtonPressed>(_logoutButtonPressedEventHandler);
+    on<LoginButtonPressed>(_loginButtonPressedEventHandler);
   }
 
   Future<void> _signupButtonPressedEventHandler(
@@ -28,12 +32,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     // Call the use case
-    final result = await signUpUser(event.email, event.password);
+    final result = await signUpUser(
+      event.email,
+      event.password,
+      event.username,
+    );
 
     if (result.isSuccess) {
       emit(SignupSuccess(userEntity: result.data!));
     } else {
       emit(SignupError(message: result.error!));
+    }
+  }
+
+  Future<void> _loginButtonPressedEventHandler(
+    LoginButtonPressed event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+
+    // Call the use case
+    final result = await loginUser(event.email, event.password);
+
+    if (result.isSuccess) {
+      emit(LoginSuccess(userEntity: result.data!));
+    } else {
+      emit(LoginError(message: result.error!));
     }
   }
 

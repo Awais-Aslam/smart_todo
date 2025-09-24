@@ -2,20 +2,18 @@ import 'package:smart_todo/core/domain/result.dart';
 import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 
-class SignUpUser {
+class LoginUser {
   final AuthRepository repository;
 
-  SignUpUser(this.repository);
+  LoginUser(this.repository);
 
   Future<Result<UserEntity>> call(
     String email,
     String password,
-    String username,
   ) async {
-    return await repository.registerUser(
+    return await repository.loginUser(
       email: email,
       password: password,
-      username: username,
     );
   }
 }

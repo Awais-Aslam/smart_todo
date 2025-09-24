@@ -5,11 +5,12 @@ part 'user_model.g.dart';
 
 @JsonSerializable()
 class UserModel {
-  final String uid, email;
+  final String uid, email, displayName;
 
   UserModel({
     required this.uid,
     required this.email,
+    required this.displayName,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -22,6 +23,7 @@ class UserModel {
     return UserEntity(
       uid: uid,
       email: email,
+      displayName: displayName,
     );
   }
 }

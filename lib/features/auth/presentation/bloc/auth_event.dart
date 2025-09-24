@@ -6,8 +6,20 @@ sealed class AuthEvent {}
 final class SignupButtonPressed extends AuthEvent {
   final String email;
   final String password;
+  final String username;
 
   SignupButtonPressed({
+    required this.email,
+    required this.password,
+    required this.username,
+  });
+}
+
+final class LoginButtonPressed extends AuthEvent {
+  final String email;
+  final String password;
+
+  LoginButtonPressed({
     required this.email,
     required this.password,
   });

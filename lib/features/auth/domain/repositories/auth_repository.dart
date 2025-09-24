@@ -6,6 +6,12 @@ abstract class AuthRepository {
   Future<Result<UserEntity>> registerUser({
     required String email,
     required String password,
+    required String username,
+  });
+
+  Future<Result<UserEntity>> loginUser({
+    required String email,
+    required String password,
   });
 
   Future<Result<Unit>> logoutUser();

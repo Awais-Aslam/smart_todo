@@ -11,6 +11,8 @@
   "authDontHaveAccount": "ليس لديك حساب؟",
   "authRegister": "إنشاء حساب",
   "authBackToLogin": "العودة لتسجيل الدخول",
+  "authWelcomeBack": "Welcome Back",
+  "authCreateAccount": "Create Account",
 
   "validationEmailRequired": "البريد الإلكتروني مطلوب",
   "validationEmailInvalid": "الرجاء إدخال بريد إلكتروني صحيح",

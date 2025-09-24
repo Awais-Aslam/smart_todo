@@ -19,6 +19,18 @@ final class SignupError extends AuthState {
   SignupError({required this.message});
 }
 
+final class LoginSuccess extends AuthState {
+  final UserEntity userEntity;
+
+  LoginSuccess({required this.userEntity});
+}
+
+final class LoginError extends AuthState {
+  final String message;
+
+  LoginError({required this.message});
+}
+
 final class LogoutSuccess extends AuthState {}
 
 final class LogoutError extends AuthState {

@@ -5,7 +5,7 @@ import 'package:smart_todo/core/constants/app_colors.dart';
 import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/core/utils/app_popup.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
-import 'package:smart_todo/features/auth/presentation/signup/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
 class HomeScreen extends StatelessWidget {

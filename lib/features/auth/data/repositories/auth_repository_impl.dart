@@ -10,14 +10,15 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.authRemoteDataSource);
 
   @override
-  Future<Result<UserEntity>> registerUser({
-    required String email,
-    required String password,
-  }) async {
+  Future<Result<UserEntity>> registerUser(
+      {required String email,
+      required String password,
+      required String username}) async {
     try {
       final userModel = await authRemoteDataSource.registerUser(
         email: email,
         password: password,
+        username: username,
       );
 
       return Result.success(userModel.toEntity());
@@ -31,6 +32,23 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await authRemoteDataSource.logoutUser();
       return Result.success(const Unit());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+  }
+
+  @override
+  Future<Result<UserEntity>> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final userModel = await authRemoteDataSource.loginUser(
+        email: email,
+        password: password,
+      );
+
+      return Result.success(userModel.toEntity());
     } catch (e) {
       return Result.failure(e.toString());
     }

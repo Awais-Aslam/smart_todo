@@ -21,7 +21,12 @@ class AppSnackbar {
   static void _show(BuildContext context, String message, Color bgColor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Center(child: Text(message)),
+        content: Center(
+          child: Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+        ),
         backgroundColor: bgColor,
         duration: const Duration(seconds: 4),
       ),

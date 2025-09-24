@@ -5,7 +5,7 @@ import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
 import 'package:smart_todo/core/di/injection.dart';
 import 'package:smart_todo/core/routes/app_router.dart';
 import 'package:smart_todo/core/theme/app_theme.dart';
-import 'package:smart_todo/features/auth/presentation/signup/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/firebase_options.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
