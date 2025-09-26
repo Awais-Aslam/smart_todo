@@ -17,12 +17,14 @@ class LoginForm extends StatelessWidget {
     required this.passwordController,
     required this.formKey,
     required this.onLogin,
+    required this.signInWithGoogle,
   });
 
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final GlobalKey<FormState> formKey;
   final Future<void> Function() onLogin;
+  final Future<void> Function() signInWithGoogle;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: AppConstants.spacing32),
           AppOutlineButton(
             key: const ValueKey('g_login_btn_key'),
-            onPressed: () {},
+            onPressed: signInWithGoogle,
             title: context.appStrings.authLoginWithGoogle,
             icon: Icons.g_mobiledata_rounded,
           ),

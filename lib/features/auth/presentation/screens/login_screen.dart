@@ -40,6 +40,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    context.read<AuthBloc>().add(GoogleSignInRequested());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
               context.go(AppRoutes.home);
               break;
             case LoginError():
+              AppSnackbar.showError(context, state.message);
+              break;
+            case GoogleSignInSuccess():
+              context.go(AppRoutes.home);
+              break;
+            case GoogleSignInError():
               AppSnackbar.showError(context, state.message);
               break;
             case _:
@@ -84,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         passwordController: passwordController,
                         formKey: formKey,
                         onLogin: _loginUser,
+                        signInWithGoogle: _signInWithGoogle,
                       ),
                     ),
                   ),

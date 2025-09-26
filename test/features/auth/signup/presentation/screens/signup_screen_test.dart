@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
 import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:smart_todo/features/auth/data/repositories/auth_repository_impl.dart';
@@ -52,7 +53,10 @@ void main() {
             ),
             RepositoryProvider<AuthRepository>(
               create: (BuildContext context) => AuthRepositoryImpl(
-                AuthRemoteDataSourceImpl(FirebaseAuth.instance),
+                AuthRemoteDataSourceImpl(
+                  FirebaseAuth.instance,
+                  GoogleSignIn(),
+                ),
               ),
             ),
             BlocProvider<AuthBloc>(
@@ -83,6 +87,8 @@ void main() {
 
       // to test text back to login
       expect(find.text('Back To Login'), findsOneWidget);
+
+      await tester.ensureVisible(find.text("Back To Login"));
 
       // to test the navigation to login screen
       await tester.tap(find.text('Back To Login'));

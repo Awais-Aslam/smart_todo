@@ -4,6 +4,7 @@ import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:smart_todo/features/auth/domain/usecases/login_user.dart';
 import 'package:smart_todo/features/auth/domain/usecases/logout_user.dart';
+import 'package:smart_todo/features/auth/domain/usecases/sign_in_with_google.dart';
 import 'package:smart_todo/features/auth/domain/usecases/signup_user.dart';
 
 part 'auth_event.dart';
@@ -14,15 +15,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUser signUpUser;
   final LogoutUser logoutUser;
   final LoginUser loginUser;
+  final SignInWithGoogle signInWithGoogle;
 
   AuthBloc({required this.authRepository})
       : signUpUser = SignUpUser(authRepository),
         logoutUser = LogoutUser(authRepository),
         loginUser = LoginUser(authRepository),
+        signInWithGoogle = SignInWithGoogle(authRepository),
         super(AuthInitial()) {
     on<SignupButtonPressed>(_signupButtonPressedEventHandler);
     on<LogoutButtonPressed>(_logoutButtonPressedEventHandler);
     on<LoginButtonPressed>(_loginButtonPressedEventHandler);
+    on<GoogleSignInRequested>(_googleSignInEventHandler);
   }
 
   Future<void> _signupButtonPressedEventHandler(
@@ -61,13 +65,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _googleSignInEventHandler(
+    GoogleSignInRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+
+    // Call the use case
+    final result = await signInWithGoogle();
+
+    if (result.isSuccess) {
+      emit(LoginSuccess(userEntity: result.data!));
+    } else if (result.data == null && result.error == null) {
+      emit(AuthInitial());
+    } else {
+      emit(LoginError(message: result.error!));
+    }
+  }
+
   Future<void> _logoutButtonPressedEventHandler(
     LogoutButtonPressed event,
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
 
-    await Future.delayed(const Duration(seconds: 10));
+    // await Future.delayed(const Duration(seconds: 10));
 
     final result = await logoutUser();
 

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:smart_todo/core/domain/result.dart';
 import 'package:smart_todo/core/domain/unit.dart';
@@ -9,20 +10,38 @@ import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
+class MockGoogleSignIn extends Mock implements GoogleSignIn {}
+
+class FakeAuthCredential extends Mock implements AuthCredential {}
+
+class MockGoogleSignInAccount extends Mock implements GoogleSignInAccount {}
+
+class MockGoogleSignInAuthentication extends Mock
+    implements GoogleSignInAuthentication {}
+
 class MockUserCredential extends Mock implements UserCredential {}
 
 void main() {
   late MockFirebaseAuth mockFirebaseAuth;
+  late MockGoogleSignIn mockGoogleSignIn;
   late AuthRemoteDataSourceImpl authRemoteDataSourceImpl;
   late AuthRepositoryImpl authRepositoryImpl;
 
   setUp(
     () async {
       mockFirebaseAuth = MockFirebaseAuth();
-      authRemoteDataSourceImpl = AuthRemoteDataSourceImpl(mockFirebaseAuth);
+      mockGoogleSignIn = MockGoogleSignIn();
+      authRemoteDataSourceImpl = AuthRemoteDataSourceImpl(
+        mockFirebaseAuth,
+        mockGoogleSignIn,
+      );
       authRepositoryImpl = AuthRepositoryImpl(authRemoteDataSourceImpl);
     },
   );
+
+  setUpAll(() {
+    registerFallbackValue(FakeAuthCredential());
+  });
 
   group('auth repository impl ...', () {
     group('register user function', () {
@@ -128,6 +147,71 @@ void main() {
             email: '',
             password: '',
           );
+
+          // assert
+          expect(result.error, 'Invalid Cred');
+        },
+      );
+    });
+
+    group('google login user function', () {
+      test(
+        'given auth repository impl class when the google login user function is called and response is 200 then it should return User Entity',
+        () async {
+          final mockCredential = MockUserCredential();
+          final mockGoogleUser = MockGoogleSignInAccount();
+          final mockGoogleAuth = MockGoogleSignInAuthentication();
+
+          // Stub Google Sign-In
+          when(() => mockGoogleSignIn.signIn())
+              .thenAnswer((_) async => mockGoogleUser);
+
+          // Stub authentication
+          when(() => mockGoogleUser.authentication)
+              .thenAnswer((_) async => mockGoogleAuth);
+
+          // Stub Firebase Auth credential sign-in
+          when(() => mockFirebaseAuth.signInWithCredential(any()))
+              .thenAnswer((_) async => mockCredential);
+
+          final result = await authRepositoryImpl.signInWithGoogle();
+
+          expect(result, isA<Result<UserEntity>>());
+        },
+      );
+
+      test(
+        'given auth repository impl class when the google login user function is called and response is not 200 then it should return error',
+        () async {
+          final mockGoogleUser = MockGoogleSignInAccount();
+          final mockGoogleAuth = MockGoogleSignInAuthentication();
+          // Arrange
+
+          // Stub Google Sign-In
+          when(() => mockGoogleSignIn.signIn())
+              .thenAnswer((_) async => mockGoogleUser);
+
+          // Stub authentication
+          when(() => mockGoogleUser.authentication)
+              .thenAnswer((_) async => mockGoogleAuth);
+
+          when(() => mockGoogleAuth.accessToken)
+              .thenReturn('fake-access-token');
+          when(() => mockGoogleAuth.idToken).thenReturn('fake-id-token');
+
+          // Stub Firebase Auth credential sign-in
+          when(() => mockFirebaseAuth.signInWithCredential(any()))
+              .thenAnswer((value) async {
+            return Future.error(
+              FirebaseAuthException(
+                code: 'invalid-cred',
+                message: 'Invalid Cred',
+              ),
+            );
+          });
+
+          // act
+          final result = await authRepositoryImpl.signInWithGoogle();
 
           // assert
           expect(result.error, 'Invalid Cred');

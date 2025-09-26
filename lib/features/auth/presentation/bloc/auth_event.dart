@@ -25,4 +25,6 @@ final class LoginButtonPressed extends AuthEvent {
   });
 }
 
+final class GoogleSignInRequested extends AuthEvent {}
+
 final class LogoutButtonPressed extends AuthEvent {}

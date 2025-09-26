@@ -31,6 +31,18 @@ final class LoginError extends AuthState {
   LoginError({required this.message});
 }
 
+final class GoogleSignInSuccess extends AuthState {
+  final UserEntity userEntity;
+
+  GoogleSignInSuccess({required this.userEntity});
+}
+
+final class GoogleSignInError extends AuthState {
+  final String message;
+
+  GoogleSignInError({required this.message});
+}
+
 final class LogoutSuccess extends AuthState {}
 
 final class LogoutError extends AuthState {

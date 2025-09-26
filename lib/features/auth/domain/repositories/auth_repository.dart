@@ -14,5 +14,7 @@ abstract class AuthRepository {
     required String password,
   });
 
+  Future<Result<UserEntity>> signInWithGoogle();
+
   Future<Result<Unit>> logoutUser();
 }

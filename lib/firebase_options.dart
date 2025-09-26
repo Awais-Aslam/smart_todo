@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1021980412877',
     projectId: 'smarttodo-65f42',
     storageBucket: 'smarttodo-65f42.firebasestorage.app',
+    androidClientId: '1021980412877-7i6osomehj474m3doe3kq5vi11h11p22.apps.googleusercontent.com',
+    iosClientId: '1021980412877-isu27rd42h1lefpm87ad9kddt1cstvs0.apps.googleusercontent.com',
     iosBundleId: 'com.example.smartTodo',
   );
+
 }
