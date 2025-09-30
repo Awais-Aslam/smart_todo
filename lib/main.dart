@@ -6,6 +6,7 @@ import 'package:smart_todo/core/di/injection.dart';
 import 'package:smart_todo/core/routes/app_router.dart';
 import 'package:smart_todo/core/theme/app_theme.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart';
 import 'package:smart_todo/firebase_options.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<AuthBloc>(
           create: (BuildContext context) => getIt<AuthBloc>(),
+        ),
+        BlocProvider<TodoTypeCubit>(
+          create: (BuildContext context) => getIt<TodoTypeCubit>(),
         ),
       ],
       child: BlocBuilder<LocaleBloc, LocaleState>(

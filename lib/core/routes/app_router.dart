@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/features/auth/presentation/screens/login_screen.dart';
 import 'package:smart_todo/features/auth/presentation/screens/signup_screen.dart';
-import 'package:smart_todo/features/home/presentation/home_screen.dart';
+import 'package:smart_todo/features/home/presentation/screens/home_screen.dart';
 import 'package:smart_todo/features/splash/presentation/screens/splash_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();

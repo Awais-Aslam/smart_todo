@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_todo/core/constants/app_colors.dart';
+import 'package:smart_todo/core/constants/app_constants.dart';
 import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/core/utils/app_popup.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -51,6 +53,21 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.white,
                   ),
                 ],
+              ),
+              body: const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.spacing8,
+                  vertical: AppConstants.spacing16,
+                ),
+                child: Column(
+                  children: [
+                    TodoTypeSelector(),
+                  ],
+                ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {},
+                child: const Icon(Icons.add),
               ),
             );
         }
