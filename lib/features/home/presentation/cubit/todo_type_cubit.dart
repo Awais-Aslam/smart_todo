@@ -7,6 +7,12 @@ enum TodoType {
   study,
 }
 
+enum TodoPriority {
+  low,
+  medium,
+  high,
+}
+
 class TodoTypeCubit extends Cubit<String> {
   TodoTypeCubit() : super(TodoType.values[0].name);
 

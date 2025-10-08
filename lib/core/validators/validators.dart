@@ -50,4 +50,44 @@ class Validators {
 
     return null;
   }
+
+  static String? validateTitle(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Title is required';
+    }
+
+    return null;
+  }
+
+  static String? validateDescription(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Description is required';
+    }
+
+    return null;
+  }
+
+  static String? validateCategory(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Category is required';
+    }
+
+    return null;
+  }
+
+  static String? validatePriority(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Priority is required';
+    }
+
+    return null;
+  }
+
+  static String? validateDueDate(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Due date is required';
+    }
+
+    return null;
+  }
 }

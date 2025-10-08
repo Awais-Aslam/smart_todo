@@ -7,12 +7,16 @@ class AppTextField extends StatelessWidget {
     required this.controller,
     this.obscureText,
     this.validator,
+    this.onTap,
+    this.readOnly,
   });
 
   final String hintText;
   final TextEditingController controller;
   final bool? obscureText;
   final String? Function(String?)? validator;
+  final void Function()? onTap;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +24,8 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText ?? false,
       validator: validator,
+      onTap: onTap,
+      readOnly: readOnly ?? false,
       decoration: InputDecoration(
         hintText: hintText,
       ),
