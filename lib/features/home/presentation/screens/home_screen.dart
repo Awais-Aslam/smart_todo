@@ -7,6 +7,7 @@ import 'package:smart_todo/core/routes/app_routes.dart';
 import 'package:smart_todo/core/utils/app_popup.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
 import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
 import 'package:smart_todo/l10n/l10n.dart';
@@ -28,62 +29,239 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TodoBloc>().add(FetchTodosEvent());
+    });
+  }
+
+  Future<void> addTodo({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+  }) async {
+    context.pop();
+    context.read<TodoBloc>().add(
+          AddTodoEvent(
+            category: category,
+            description: description,
+            dueDate: dueDate,
+            priority: priority,
+            title: title,
+          ),
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        switch (state) {
-          case LogoutSuccess():
-            context.go(AppRoutes.login);
-            break;
-          case LogoutError():
-            AppSnackbar.showError(context, state.message);
-            break;
-          case _:
-            break;
-        }
-      },
-      builder: (context, state) {
-        switch (state) {
-          case AuthLoading():
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          case _:
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(context.appStrings.appTitle),
-                actions: [
-                  IconButton(
-                    onPressed: () => _handleLogout(context),
-                    icon: const Icon(Icons.logout),
-                    color: AppColors.white,
-                  ),
-                ],
-              ),
-              body: const Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppConstants.spacing8,
-                  vertical: AppConstants.spacing16,
-                ),
-                child: Column(
-                  children: [
-                    TodoTypeSelector(),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            switch (state) {
+              case LogoutSuccess():
+                context.go(AppRoutes.login);
+                break;
+              case LogoutError():
+                AppSnackbar.showError(context, state.message);
+                break;
+              case _:
+                break;
+            }
+          },
+        ),
+        BlocListener<TodoBloc, TodoState>(
+          listener: (context, state) {
+            switch (state) {
+              case AddTodoSuccess():
+                AppSnackbar.showSuccess(context, 'Todo added successfully');
+                break;
+              case AddTodoError():
+                AppSnackbar.showError(context, state.message);
+                break;
+              case _:
+                break;
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          switch (state) {
+            case AuthLoading():
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case _:
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text(context.appStrings.appTitle),
+                  actions: [
+                    IconButton(
+                      onPressed: () => _handleLogout(context),
+                      icon: const Icon(Icons.logout),
+                      color: AppColors.white,
+                    ),
                   ],
                 ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) => const AddTodoBottomSheet(),
-                  );
-                },
-                child: const Icon(Icons.add),
-              ),
-            );
-        }
-      },
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppConstants.spacing8,
+                    vertical: AppConstants.spacing16,
+                  ),
+                  child: Column(
+                    children: [
+                      const TodoTypeSelector(),
+                      Expanded(
+                        child: BlocBuilder<TodoBloc, TodoState>(
+                          builder: (context, state) {
+                            switch (state) {
+                              case TodoLoading():
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              case _:
+                                return const Text('Todo loaded');
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => AddTodoBottomSheet(
+                        addTodo: ({
+                          required String category,
+                          required String description,
+                          required String dueDate,
+                          required String priority,
+                          required String title,
+                        }) {
+                          return addTodo(
+                              title: title,
+                              description: description,
+                              category: category,
+                              priority: priority,
+                              dueDate: dueDate);
+                        },
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              );
+          }
+        },
+      ),
     );
+    // return BlocConsumer<AuthBloc, AuthState>(
+    //   listener: (context, state) {
+    //     switch (state) {
+    //       case LogoutSuccess():
+    //         context.go(AppRoutes.login);
+    //         break;
+    //       case LogoutError():
+    //         AppSnackbar.showError(context, state.message);
+    //         break;
+    //       case _:
+    //         break;
+    //     }
+    //   },
+    //   builder: (context, state) {
+    //     switch (state) {
+    //       case AuthLoading():
+    //         return const Center(
+    //           child: CircularProgressIndicator(),
+    //         );
+    //       case _:
+    //         return Scaffold(
+    //           appBar: AppBar(
+    //             title: Text(context.appStrings.appTitle),
+    //             actions: [
+    //               IconButton(
+    //                 onPressed: () => _handleLogout(context),
+    //                 icon: const Icon(Icons.logout),
+    //                 color: AppColors.white,
+    //               ),
+    //             ],
+    //           ),
+    //           body: const Padding(
+    //             padding: EdgeInsets.symmetric(
+    //               horizontal: AppConstants.spacing8,
+    //               vertical: AppConstants.spacing16,
+    //             ),
+    //             child: Column(
+    //               children: [
+    //                 TodoTypeSelector(),
+    //               ],
+    //             ),
+    //           ),
+    //           floatingActionButton: FloatingActionButton(
+    //             onPressed: () {
+    //               showModalBottomSheet(
+    //                 context: context,
+    //                 isScrollControlled: true,
+    //                 builder: (context) => AddTodoBottomSheet(
+    //                   addTodo: ({
+    //                     required String category,
+    //                     required String description,
+    //                     required String dueDate,
+    //                     required String priority,
+    //                     required String title,
+    //                   }) {
+    //                     return addTodo(
+    //                         title: title,
+    //                         description: description,
+    //                         category: category,
+    //                         priority: priority,
+    //                         dueDate: dueDate);
+    //                   },
+    //                 ),
+    //               );
+    //             },
+    //             child: const Icon(Icons.add),
+    //           ),
+    //         );
+    //     }
+    //   },
+    // );
   }
 }
+
+// class TodoListSection extends StatelessWidget {
+//   const TodoListSection({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<TodoBloc, TodoState>(
+//       builder: (context, state) {
+//         if (state is TodoLoading) {
+//           return const Center(child: CircularProgressIndicator());
+//         } else if (state is TodoLoaded) {
+//           return ListView.builder(
+//             itemCount: state.todos.length,
+//             itemBuilder: (context, index) {
+//               final todo = state.todos[index];
+//               return ListTile(
+//                 title: Text(todo.title),
+//                 subtitle: Text(todo.description),
+//               );
+//             },
+//           );
+//         } else if (state is TodoEmpty) {
+//           return const Center(child: Text('No todos found'));
+//         }
+//         return const SizedBox.shrink();
+//       },
+//     );
+//   }
+// }
+

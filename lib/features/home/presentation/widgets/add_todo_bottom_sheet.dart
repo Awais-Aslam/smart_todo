@@ -10,7 +10,14 @@ import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart
 import 'package:smart_todo/features/home/presentation/widgets/date_picker_dialog_widget.dart';
 
 class AddTodoBottomSheet extends StatefulWidget {
-  const AddTodoBottomSheet({super.key});
+  const AddTodoBottomSheet({super.key, required this.addTodo});
+  final Future<void> Function({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+  }) addTodo;
 
   @override
   State<AddTodoBottomSheet> createState() => _AddTodoBottomSheetState();
@@ -105,12 +112,19 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
                   }
                 },
               ),
-
               const SizedBox(height: AppConstants.spacing32),
               AppButton(
                 onPressed: () {
                   context.hideKeyboard();
-                  if (formKey.currentState!.validate()) {}
+                  if (formKey.currentState!.validate()) {
+                    widget.addTodo(
+                      title: titleController.text.trim(),
+                      description: descriptionController.text.trim(),
+                      priority: priority!,
+                      category: category!,
+                      dueDate: formattedDate!,
+                    );
+                  }
                 },
                 title: 'Submit',
               ),

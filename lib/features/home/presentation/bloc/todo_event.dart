@@ -1,0 +1,22 @@
+part of 'todo_bloc.dart';
+
+@immutable
+sealed class TodoEvent {}
+
+final class AddTodoEvent extends TodoEvent {
+  final String title;
+  final String description;
+  final String category;
+  final String priority;
+  final String dueDate;
+
+  AddTodoEvent({
+    required this.category,
+    required this.description,
+    required this.dueDate,
+    required this.priority,
+    required this.title,
+  });
+}
+
+final class FetchTodosEvent extends TodoEvent {}
