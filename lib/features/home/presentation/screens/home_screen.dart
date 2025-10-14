@@ -9,6 +9,7 @@ import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
 import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
+import 'package:smart_todo/features/home/presentation/widgets/todo_list_view.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
@@ -107,28 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.symmetric(
+                body: const Padding(
+                  padding: EdgeInsets.symmetric(
                     horizontal: AppConstants.spacing8,
                     vertical: AppConstants.spacing16,
                   ),
                   child: Column(
                     children: [
-                      const TodoTypeSelector(),
-                      Expanded(
-                        child: BlocBuilder<TodoBloc, TodoState>(
-                          builder: (context, state) {
-                            switch (state) {
-                              case TodoLoading():
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              case _:
-                                return const Text('Todo loaded');
-                            }
-                          },
-                        ),
-                      ),
+                      TodoTypeSelector(),
+                      TodoListView(),
                     ],
                   ),
                 ),
@@ -162,106 +150,5 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
-    // return BlocConsumer<AuthBloc, AuthState>(
-    //   listener: (context, state) {
-    //     switch (state) {
-    //       case LogoutSuccess():
-    //         context.go(AppRoutes.login);
-    //         break;
-    //       case LogoutError():
-    //         AppSnackbar.showError(context, state.message);
-    //         break;
-    //       case _:
-    //         break;
-    //     }
-    //   },
-    //   builder: (context, state) {
-    //     switch (state) {
-    //       case AuthLoading():
-    //         return const Center(
-    //           child: CircularProgressIndicator(),
-    //         );
-    //       case _:
-    //         return Scaffold(
-    //           appBar: AppBar(
-    //             title: Text(context.appStrings.appTitle),
-    //             actions: [
-    //               IconButton(
-    //                 onPressed: () => _handleLogout(context),
-    //                 icon: const Icon(Icons.logout),
-    //                 color: AppColors.white,
-    //               ),
-    //             ],
-    //           ),
-    //           body: const Padding(
-    //             padding: EdgeInsets.symmetric(
-    //               horizontal: AppConstants.spacing8,
-    //               vertical: AppConstants.spacing16,
-    //             ),
-    //             child: Column(
-    //               children: [
-    //                 TodoTypeSelector(),
-    //               ],
-    //             ),
-    //           ),
-    //           floatingActionButton: FloatingActionButton(
-    //             onPressed: () {
-    //               showModalBottomSheet(
-    //                 context: context,
-    //                 isScrollControlled: true,
-    //                 builder: (context) => AddTodoBottomSheet(
-    //                   addTodo: ({
-    //                     required String category,
-    //                     required String description,
-    //                     required String dueDate,
-    //                     required String priority,
-    //                     required String title,
-    //                   }) {
-    //                     return addTodo(
-    //                         title: title,
-    //                         description: description,
-    //                         category: category,
-    //                         priority: priority,
-    //                         dueDate: dueDate);
-    //                   },
-    //                 ),
-    //               );
-    //             },
-    //             child: const Icon(Icons.add),
-    //           ),
-    //         );
-    //     }
-    //   },
-    // );
   }
 }
-
-// class TodoListSection extends StatelessWidget {
-//   const TodoListSection({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<TodoBloc, TodoState>(
-//       builder: (context, state) {
-//         if (state is TodoLoading) {
-//           return const Center(child: CircularProgressIndicator());
-//         } else if (state is TodoLoaded) {
-//           return ListView.builder(
-//             itemCount: state.todos.length,
-//             itemBuilder: (context, index) {
-//               final todo = state.todos[index];
-//               return ListTile(
-//                 title: Text(todo.title),
-//                 subtitle: Text(todo.description),
-//               );
-//             },
-//           );
-//         } else if (state is TodoEmpty) {
-//           return const Center(child: Text('No todos found'));
-//         }
-//         return const SizedBox.shrink();
-//       },
-//     );
-//   }
-// }
-
