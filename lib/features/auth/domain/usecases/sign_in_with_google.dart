@@ -1,4 +1,4 @@
-import 'package:smart_todo/core/domain/result.dart';
+import 'package:smart_todo/core/common/result.dart';
 import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 

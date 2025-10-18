@@ -1,5 +1,5 @@
-import 'package:smart_todo/core/domain/result.dart';
-import 'package:smart_todo/core/domain/unit.dart';
+import 'package:smart_todo/core/common/result.dart';
+import 'package:smart_todo/core/common/unit.dart';
 import 'package:smart_todo/features/home/domain/repositories/todo_repository.dart';
 
 class AddTodo {

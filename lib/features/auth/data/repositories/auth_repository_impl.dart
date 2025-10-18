@@ -1,5 +1,5 @@
-import 'package:smart_todo/core/domain/result.dart';
-import 'package:smart_todo/core/domain/unit.dart';
+import 'package:smart_todo/core/common/result.dart';
+import 'package:smart_todo/core/common/unit.dart';
 import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';

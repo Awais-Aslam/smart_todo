@@ -1,4 +1,4 @@
-import 'package:smart_todo/core/domain/result.dart';
+import 'package:smart_todo/core/common/result.dart';
 import 'package:smart_todo/features/home/domain/entities/todo_entity.dart';
 import 'package:smart_todo/features/home/domain/repositories/todo_repository.dart';
 

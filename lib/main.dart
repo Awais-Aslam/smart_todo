@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
 import 'package:smart_todo/core/di/injection.dart';
 import 'package:smart_todo/core/routes/app_router.dart';
+import 'package:smart_todo/core/services/notification_service.dart';
 import 'package:smart_todo/core/theme/app_theme.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
@@ -13,11 +14,14 @@ import 'package:smart_todo/l10n/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   await setupDependencies();
+
+  await getIt.get<NotificationService>().initNotifications();
 
   runApp(const MyApp());
 }
