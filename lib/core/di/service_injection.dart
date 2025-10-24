@@ -5,16 +5,17 @@ import 'package:smart_todo/core/services/notification_service.dart';
 
 void registerServices() {
   getIt.registerLazySingleton<FlutterLocalNotificationsPlugin>(
-      () => FlutterLocalNotificationsPlugin());
+    () => FlutterLocalNotificationsPlugin(),
+  );
 
   getIt.registerLazySingleton<FirebaseMessaging>(
-      () => FirebaseMessaging.instance);
+    () => FirebaseMessaging.instance,
+  );
 
   getIt.registerLazySingleton<NotificationService>(
     () => NotificationService(
-      flutterLocalNotificationsPlugin:
-          getIt.get<FlutterLocalNotificationsPlugin>(),
-      firebaseMessaging: getIt.get<FirebaseMessaging>(),
+      flutterLocalNotificationsPlugin: getIt<FlutterLocalNotificationsPlugin>(),
+      firebaseMessaging: getIt<FirebaseMessaging>(),
     ),
   );
 }

@@ -12,6 +12,7 @@ import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sh
 import 'package:smart_todo/features/home/presentation/widgets/todo_list_view.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
 import 'package:smart_todo/l10n/l10n.dart';
+import 'package:smart_todo/server_key.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,8 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<TodoBloc>().add(FetchTodosEvent());
+      final getSeverKey = get_server_key();
+      final serverToken = await getSeverKey.server_token();
+      debugPrint("serverToken : $serverToken");
     });
   }
 
@@ -79,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
             switch (state) {
               case AddTodoSuccess():
                 AppSnackbar.showSuccess(context, 'Todo added successfully');
+                context.read<TodoBloc>().add(FetchTodosEvent());
                 break;
               case AddTodoError():
                 AppSnackbar.showError(context, state.message);
@@ -134,11 +139,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           required String title,
                         }) {
                           return addTodo(
-                              title: title,
-                              description: description,
-                              category: category,
-                              priority: priority,
-                              dueDate: dueDate);
+                            title: title,
+                            description: description,
+                            category: category,
+                            priority: priority,
+                            dueDate: dueDate,
+                          );
                         },
                       ),
                     );
