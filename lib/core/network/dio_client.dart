@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'api_constants.dart';
 
@@ -9,7 +10,7 @@ class DioClient {
         baseUrl: ApiConstants.baseUrl,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer  ${ApiConstants.serverKey}',
+          'Authorization': 'Bearer  ${dotenv.env['SERVER_KEY']}',
         },
       ),
     );
