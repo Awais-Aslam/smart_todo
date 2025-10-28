@@ -8,6 +8,7 @@ import 'package:smart_todo/core/services/notification_service.dart';
 import 'package:smart_todo/core/theme/app_theme.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
+import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart';
 import 'package:smart_todo/firebase_options.dart';
 import 'package:smart_todo/l10n/l10n.dart';
@@ -45,6 +46,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<TodoBloc>(
           create: (BuildContext context) => getIt<TodoBloc>(),
+        ),
+        BlocProvider<TodoListCubit>(
+          create: (BuildContext context) => getIt<TodoListCubit>(),
         ),
       ],
       child: BlocBuilder<LocaleBloc, LocaleState>(

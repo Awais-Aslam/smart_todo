@@ -8,6 +8,7 @@ import 'package:smart_todo/core/utils/app_popup.dart';
 import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
+import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
 import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_list_view.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<TodoBloc>().add(FetchTodosEvent());
+      context.read<TodoListCubit>().fetchTodoList();
       final getSeverKey = get_server_key();
       final serverToken = await getSeverKey.server_token();
       debugPrint("serverToken : $serverToken");

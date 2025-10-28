@@ -5,6 +5,7 @@ import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/domain/repositories/notification_repository.dart';
 import 'package:smart_todo/features/home/domain/repositories/todo_repository.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
+import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart';
 
 void registerBlocs() {
@@ -22,4 +23,10 @@ void registerBlocs() {
   );
 
   getIt.registerFactory<TodoTypeCubit>(() => TodoTypeCubit());
+
+  getIt.registerFactory<TodoListCubit>(
+    () => TodoListCubit(
+      todoRepository: getIt<TodoRepository>(),
+    ),
+  );
 }
