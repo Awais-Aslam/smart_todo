@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:smart_todo/core/di/injection.dart';
+import 'package:smart_todo/core/services/secure_storage_service.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -124,6 +126,8 @@ class NotificationService {
     await initPushNotifications();
 
     await initLocalNotifications();
+
+    await getIt<SecureStorageService>().saveFcmToken(fcmToken!);
 
     debugPrint('FCM Token : $fcmToken');
   }

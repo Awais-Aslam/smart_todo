@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smart_todo/core/app/locale/bloc/locale_bloc.dart';
+import 'package:smart_todo/core/services/secure_storage_service.dart';
 import 'package:smart_todo/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:smart_todo/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
@@ -62,6 +63,7 @@ void main() {
             BlocProvider<AuthBloc>(
               create: (BuildContext context) => AuthBloc(
                 authRepository: context.read<AuthRepository>(),
+                storage: SecureStorageService(),
               ),
             ),
           ],

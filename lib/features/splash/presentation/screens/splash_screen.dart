@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_todo/core/constants/app_colors.dart';
 import 'package:smart_todo/core/constants/app_constants.dart';
+import 'package:smart_todo/core/di/injection.dart';
 import 'package:smart_todo/core/extensions/context_extension.dart';
 import 'package:smart_todo/core/routes/app_routes.dart';
+import 'package:smart_todo/core/services/secure_storage_service.dart';
 import 'package:smart_todo/l10n/l10n.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -105,11 +106,12 @@ class _SplashScreenState extends State<SplashScreen>
   void _navigateToNext() async {
     await Future.delayed(widget.delay);
 
-    final user = FirebaseAuth.instance.currentUser;
+    // final user = FirebaseAuth.instance.currentUser;
+    final isUserLoggedIn = await getIt<SecureStorageService>().isUserLoggedIn();
 
     if (!mounted) return;
 
-    if (user != null) {
+    if (isUserLoggedIn) {
       context.go(AppRoutes.home);
     } else {
       context.go(AppRoutes.login);

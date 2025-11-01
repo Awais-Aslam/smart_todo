@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_todo/core/services/secure_storage_service.dart';
+import 'package:smart_todo/features/auth/data/models/user_model.dart';
 import 'package:smart_todo/features/auth/domain/entities/user_entity.dart';
 import 'package:smart_todo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:smart_todo/features/auth/domain/usecases/login_user.dart';
@@ -12,13 +16,16 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
+  final SecureStorageService storage;
   final SignUpUser signUpUser;
   final LogoutUser logoutUser;
   final LoginUser loginUser;
   final SignInWithGoogle signInWithGoogle;
 
-  AuthBloc({required this.authRepository})
-      : signUpUser = SignUpUser(authRepository),
+  AuthBloc({
+    required this.authRepository,
+    required this.storage,
+  })  : signUpUser = SignUpUser(authRepository),
         logoutUser = LogoutUser(authRepository),
         loginUser = LoginUser(authRepository),
         signInWithGoogle = SignInWithGoogle(authRepository),
@@ -43,6 +50,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     if (result.isSuccess) {
+      final userModel = UserModel.fromEntity(result.data!);
+      await storage.saveUserData(jsonEncode(userModel.toJson()));
       emit(SignupSuccess(userEntity: result.data!));
     } else {
       emit(SignupError(message: result.error!));
@@ -59,6 +68,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await loginUser(event.email, event.password);
 
     if (result.isSuccess) {
+      final userModel = UserModel.fromEntity(result.data!);
+      await storage.saveUserData(jsonEncode(userModel.toJson()));
       emit(LoginSuccess(userEntity: result.data!));
     } else {
       emit(LoginError(message: result.error!));
@@ -75,6 +86,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await signInWithGoogle();
 
     if (result.isSuccess) {
+      final userModel = UserModel.fromEntity(result.data!);
+      await storage.saveUserData(jsonEncode(userModel.toJson()));
       emit(LoginSuccess(userEntity: result.data!));
     } else if (result.data == null && result.error == null) {
       emit(AuthInitial());

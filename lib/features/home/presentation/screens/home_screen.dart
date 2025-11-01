@@ -9,6 +9,7 @@ import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
+import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart';
 import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_list_view.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
@@ -80,11 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         BlocListener<TodoBloc, TodoState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             switch (state) {
               case AddTodoSuccess():
                 AppSnackbar.showSuccess(context, 'Todo added successfully');
-                context.read<TodoBloc>().add(FetchTodosEvent());
+                await context.read<TodoListCubit>().fetchTodoList();
+                if (!context.mounted) return;
+                final type = context.read<TodoTypeCubit>().state;
+                context.read<TodoListCubit>().fetchFilteredList(type);
                 break;
               case AddTodoError():
                 AppSnackbar.showError(context, state.message);
