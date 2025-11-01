@@ -9,7 +9,7 @@
 .history
 .svn/
 *.env
-*server_key.dart
+lib/server_key.dart
 migrate_working_dir/
 
 # IntelliJ related
