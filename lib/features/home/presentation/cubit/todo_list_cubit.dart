@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_todo/core/extensions/list_extension.dart';
 import 'package:smart_todo/features/home/domain/repositories/todo_repository.dart';
 import 'package:smart_todo/features/home/domain/usecases/fetch_todo.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_state.dart';
@@ -17,7 +18,8 @@ class TodoListCubit extends Cubit<TodoListState> {
 
     if (result.isSuccess) {
       final todos = result.data!;
-      emit(TodoListLoaded(allTodos: todos, visibleTodos: todos));
+      final sortedTodos = todos.sortByPriority();
+      emit(TodoListLoaded(allTodos: sortedTodos, visibleTodos: sortedTodos));
     } else {
       emit(TodoListError(result.error!));
     }
@@ -33,7 +35,8 @@ class TodoListCubit extends Cubit<TodoListState> {
       emit(TodoListLoaded(allTodos: allTodos, visibleTodos: allTodos));
     } else {
       final filtered = allTodos.where((todo) => todo.category == type).toList();
-      emit(TodoListLoaded(allTodos: allTodos, visibleTodos: filtered));
+      final sortedTodos = filtered.sortByPriority();
+      emit(TodoListLoaded(allTodos: allTodos, visibleTodos: sortedTodos));
     }
   }
 }
