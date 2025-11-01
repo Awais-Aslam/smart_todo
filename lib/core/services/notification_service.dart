@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_todo/core/di/injection.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:smart_todo/core/services/secure_storage_service.dart';
 
 class NotificationService {
@@ -17,6 +21,11 @@ class NotificationService {
 
   // init local notifications
   Future<void> initLocalNotifications() async {
+    // init timezone
+    tz.initializeTimeZones();
+    final String localTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(localTimeZone));
+
     // android settings
     const androidInitializationSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -52,6 +61,58 @@ class NotificationService {
         handleNotification(message);
       },
     );
+  }
+
+  /*
+    Schdeule a notification at a specific date and time (e.g 11pm)
+
+    minutes -> (0-59)
+    hour -> (0-23)
+  */
+  Future<void> scheduleNotification({
+    int id = 1,
+    required String title,
+    required String body,
+    required int hour,
+    required int minute,
+    required String dueDateString,
+  }) async {
+    try {
+      // Parse the due date string (example format: "2025-11-05 14:30")
+      DateTime dueDate = DateFormat("MMM dd, yyyy").parse(dueDateString);
+
+      // Combine date with hour and minute
+      DateTime dueDateTime = DateTime(
+        dueDate.year,
+        dueDate.month,
+        dueDate.day,
+        hour,
+        minute,
+      );
+
+      // Schedule 1 day before
+      DateTime notificationDate = dueDateTime.subtract(const Duration(days: 1));
+
+      // Convert to timezone-aware object
+      final scheduledDate = tz.TZDateTime.from(notificationDate, tz.local);
+
+      // call the plugin
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduledDate,
+        notificationDetails(),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+
+        // schdule notification daily at the same time
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+
+      debugPrint("Schedule Notification");
+    } catch (e) {
+      debugPrint("Schedule Notification error : ${e.toString()}");
+    }
   }
 
   // navigate user to notification screen

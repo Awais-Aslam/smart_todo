@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_todo/core/di/injection.dart';
+import 'package:smart_todo/core/services/notification_service.dart';
+import 'package:smart_todo/core/services/secure_storage_service.dart';
 import 'package:smart_todo/features/home/domain/entities/notification_entity.dart';
 import 'package:smart_todo/features/home/domain/entities/todo_entity.dart';
 import 'package:smart_todo/features/home/domain/repositories/notification_repository.dart';
@@ -45,13 +48,21 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     );
 
     if (result.isSuccess) {
+      final fcmToken = await getIt<SecureStorageService>().getFcmToken();
       await sendNotificationUsecase(
         NotificationEntity(
-          token:
-              "cSiMTXxAT9KIvjf5XwHsXX:APA91bEPMwGKyeZEgm47jTcYcbF4fvTbpyUoOHsAFB4_GSmWaay-B8WEBk53OFbCwDF7A0VlownbndmuyACd1cOD_l523RdN2aIZbVo07hC3dQ3ihEr1noM",
-          title: "${event.title} Added",
+          token: fcmToken!,
+          title: "Todo ${event.title} Added",
           body: event.description,
         ),
+      );
+      // schedule notification before 1 day
+      getIt<NotificationService>().scheduleNotification(
+        title: "Don't forget!",
+        body: "Your task ${event.title} is due soon.",
+        hour: 12,
+        minute: 00,
+        dueDateString: event.dueDate,
       );
       emit(AddTodoSuccess());
     } else {
