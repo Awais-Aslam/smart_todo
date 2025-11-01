@@ -26,4 +26,13 @@ class UserModel {
       displayName: displayName,
     );
   }
+
+  // ✅ Convert Entity to UserModel
+  factory UserModel.fromEntity(UserEntity entity) {
+    return UserModel(
+      uid: entity.uid,
+      email: entity.email,
+      displayName: entity.displayName,
+    );
+  }
 }

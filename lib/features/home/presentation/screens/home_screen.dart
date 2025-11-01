@@ -14,7 +14,7 @@ import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sh
 import 'package:smart_todo/features/home/presentation/widgets/todo_list_view.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
 import 'package:smart_todo/l10n/l10n.dart';
-import 'package:smart_todo/server_key.dart';
+import 'package:smart_todo/server_token_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,8 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<TodoListCubit>().fetchTodoList();
-      final getSeverKey = get_server_key();
-      final serverToken = await getSeverKey.server_token();
+      final getSeverKey = ServerTokenProvider();
+      final serverToken = await getSeverKey.serverToken();
       debugPrint("serverToken : $serverToken");
     });
   }
