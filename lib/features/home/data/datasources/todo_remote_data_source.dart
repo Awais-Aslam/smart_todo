@@ -13,6 +13,15 @@ abstract class TodoRemoteDataSource {
     required String dueDate,
   });
 
+  Future<void> editTodo({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+    required String uid,
+  });
+
   Future<List<TodoModel>> fetchTodos();
 }
 
@@ -63,6 +72,29 @@ class TodoRemoteDataSourceImpl implements TodoRemoteDataSource {
     } catch (e) {
       debugPrint("error : ${e.toString()}");
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> editTodo({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+    required String uid,
+  }) async {
+    try {
+      DateTime dateTime = DateFormat("MMM dd, yyyy").parse(dueDate);
+      await firebaseFirestore.collection('todo').doc(uid).update({
+        'title': title,
+        'description': description,
+        'category': category,
+        'priority': priority,
+        'dueDate': Timestamp.fromDate(dateTime),
+      });
+    } catch (e) {
+      debugPrint("error : ${e.toString()}");
     }
   }
 }

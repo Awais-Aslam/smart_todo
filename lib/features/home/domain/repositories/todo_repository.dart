@@ -10,5 +10,14 @@ abstract class TodoRepository {
     required String priority,
     required String dueDate,
   });
+  Future<Result<Unit>> editTodo({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+    required String uid,
+  });
+
   Future<Result<List<TodoEntity>>> fetchTodos();
 }

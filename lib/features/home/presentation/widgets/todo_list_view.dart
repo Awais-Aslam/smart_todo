@@ -1,18 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_todo/core/constants/app_colors.dart';
 import 'package:smart_todo/core/constants/app_constants.dart';
 import 'package:smart_todo/core/extensions/context_extension.dart';
 import 'package:smart_todo/core/extensions/string_extension.dart';
+import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_state.dart';
+import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
 
 class TodoListView extends StatelessWidget {
   const TodoListView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Future<void> editTodo({
+      required String title,
+      required String description,
+      required String category,
+      required String priority,
+      required String dueDate,
+      String? uid,
+    }) async {
+      context.pop();
+      context.read<TodoBloc>().add(
+            EditTodoEvent(
+              category: category,
+              description: description,
+              dueDate: dueDate,
+              priority: priority,
+              title: title,
+              uid: uid!,
+            ),
+          );
+    }
+
     return Expanded(
       child: BlocBuilder<TodoListCubit, TodoListState>(
         builder: (context, state) {
@@ -126,10 +150,24 @@ class TodoListView extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Icon(
-                                    Icons.edit_outlined,
-                                    color: AppColors.darkGrey.withOpacity(0.5),
-                                    size: AppConstants.icon20,
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) =>
+                                            AddTodoBottomSheet(
+                                          todo: todo,
+                                          saveTodo: editTodo,
+                                        ),
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.edit_outlined,
+                                      color:
+                                          AppColors.darkGrey.withOpacity(0.5),
+                                      size: AppConstants.icon20,
+                                    ),
                                   ),
                                   const SizedBox(width: AppConstants.spacing12),
                                   Icon(

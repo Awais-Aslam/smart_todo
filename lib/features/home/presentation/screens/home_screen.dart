@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String category,
     required String priority,
     required String dueDate,
+    String? uid,
   }) async {
     context.pop();
     context.read<TodoBloc>().add(
@@ -91,6 +92,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 context.read<TodoListCubit>().fetchFilteredList(type);
                 break;
               case AddTodoError():
+                AppSnackbar.showError(context, state.message);
+                break;
+              case EditTodoSuccess():
+                AppSnackbar.showSuccess(context, 'Todo edited successfully');
+                await context.read<TodoListCubit>().fetchTodoList();
+                if (!context.mounted) return;
+                final type = context.read<TodoTypeCubit>().state;
+                context.read<TodoListCubit>().fetchFilteredList(type);
+                break;
+              case EditTodoError():
                 AppSnackbar.showError(context, state.message);
                 break;
               case _:
@@ -136,21 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       isScrollControlled: true,
                       builder: (context) => AddTodoBottomSheet(
-                        addTodo: ({
-                          required String category,
-                          required String description,
-                          required String dueDate,
-                          required String priority,
-                          required String title,
-                        }) {
-                          return addTodo(
-                            title: title,
-                            description: description,
-                            category: category,
-                            priority: priority,
-                            dueDate: dueDate,
-                          );
-                        },
+                        saveTodo: addTodo,
                       ),
                     );
                   },

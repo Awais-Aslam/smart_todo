@@ -43,4 +43,28 @@ class TodoRepositoryImpl implements TodoRepository {
       return Result.failure(e.toString());
     }
   }
+
+  @override
+  Future<Result<Unit>> editTodo({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+    required String uid,
+  }) async {
+    try {
+      await todoRemoteDataSource.editTodo(
+        title: title,
+        description: description,
+        category: category,
+        priority: priority,
+        dueDate: dueDate,
+        uid: uid,
+      );
+      return Result.success(const Unit());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+  }
 }

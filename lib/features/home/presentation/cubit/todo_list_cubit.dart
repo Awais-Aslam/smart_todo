@@ -14,6 +14,7 @@ class TodoListCubit extends Cubit<TodoListState> {
         super(TodoListInitial());
 
   Future<void> fetchTodoList() async {
+    emit(TodoListLoading());
     final result = await fetchTodo();
 
     if (result.isSuccess) {
