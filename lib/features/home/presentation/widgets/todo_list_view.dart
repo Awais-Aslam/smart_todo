@@ -6,194 +6,16 @@ import 'package:smart_todo/core/constants/app_colors.dart';
 import 'package:smart_todo/core/constants/app_constants.dart';
 import 'package:smart_todo/core/extensions/context_extension.dart';
 import 'package:smart_todo/core/extensions/string_extension.dart';
+import 'package:smart_todo/core/utils/app_popup.dart';
+import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_state.dart';
+import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart';
 import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
 
 class TodoListView extends StatelessWidget {
   const TodoListView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    Future<void> editTodo({
-      required String title,
-      required String description,
-      required String category,
-      required String priority,
-      required String dueDate,
-      String? uid,
-    }) async {
-      context.pop();
-      context.read<TodoBloc>().add(
-            EditTodoEvent(
-              category: category,
-              description: description,
-              dueDate: dueDate,
-              priority: priority,
-              title: title,
-              uid: uid!,
-            ),
-          );
-    }
-
-    return Expanded(
-      child: BlocBuilder<TodoListCubit, TodoListState>(
-        builder: (context, state) {
-          switch (state) {
-            case TodoListLoaded():
-              return Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppConstants.spacing64,
-                ),
-                child: ListView.builder(
-                  itemCount: state.visibleTodos.length,
-                  itemBuilder: (context, index) {
-                    final todo = state.visibleTodos[index];
-                    final timeStamp = todo.dueDate;
-                    final dueDate = timeStamp.toDate();
-                    final formatedDate =
-                        DateFormat(AppConstants.dateFormatShort)
-                            .format(dueDate);
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppConstants.spacing12,
-                        vertical: AppConstants.spacing8,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius:
-                              BorderRadius.circular(AppConstants.radius20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.black.withOpacity(0.05),
-                              blurRadius: AppConstants.radius16,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                          border: Border.all(
-                            color: AppColors.darkGrey.withOpacity(0.08),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: AppConstants.padding16,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Top Row (Priority + Date)
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppConstants.radius12,
-                                      vertical: AppConstants.radius8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _getPriorityColor(todo.priority)
-                                          .withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(
-                                        AppConstants.radius12,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      todo.priority.toUpperCase(),
-                                      style: context.textTheme.labelLarge
-                                          ?.copyWith(
-                                        color: _getPriorityColor(todo.priority),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    formatedDate,
-                                    style:
-                                        context.textTheme.labelLarge?.copyWith(
-                                      color:
-                                          AppColors.darkGrey.withOpacity(0.5),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: AppConstants.spacing12),
-
-                              // Title
-                              Text(
-                                todo.title.capitalizeFirst(),
-                                style: context.textTheme.titleLarge?.copyWith(
-                                  color: AppColors.darkGrey,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              const SizedBox(height: AppConstants.spacing8),
-
-                              // Description
-                              Text(
-                                todo.description.capitalizeFirst(),
-                                style: context.textTheme.bodyLarge?.copyWith(
-                                  color: AppColors.darkGrey.withOpacity(0.5),
-                                ),
-                              ),
-                              const SizedBox(height: AppConstants.spacing12),
-
-                              // Subtle divider + Action row (optional)
-                              Divider(
-                                color: AppColors.darkGrey.withOpacity(0.08),
-                                height: 1,
-                              ),
-                              const SizedBox(height: AppConstants.spacing12),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (context) =>
-                                            AddTodoBottomSheet(
-                                          todo: todo,
-                                          saveTodo: editTodo,
-                                        ),
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.edit_outlined,
-                                      color:
-                                          AppColors.darkGrey.withOpacity(0.5),
-                                      size: AppConstants.icon20,
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppConstants.spacing12),
-                                  Icon(
-                                    Icons.delete_outline,
-                                    color: AppColors.errorRed.withOpacity(0.5),
-                                    size: AppConstants.icon20,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            case _:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-          }
-        },
-      ),
-    );
-  }
 
   Color _getPriorityColor(String priority) {
     switch (priority.toLowerCase()) {
@@ -206,5 +28,262 @@ class TodoListView extends StatelessWidget {
       default:
         return AppColors.blue;
     }
+  }
+
+  Future<void> deleteTodo({
+    required BuildContext context,
+    required String uid,
+  }) async {
+    final shouldLogout = await AppPopup.showDeleteConfirmationDialog(context);
+    if (shouldLogout == true) {
+      if (!context.mounted) return;
+      context.read<TodoBloc>().add(DeleteTodoEvent(uid: uid));
+    }
+  }
+
+  Future<void> editTodo({
+    required String title,
+    required String description,
+    required String category,
+    required String priority,
+    required String dueDate,
+    required BuildContext context,
+    String? uid,
+  }) async {
+    context.pop();
+    context.read<TodoBloc>().add(
+          EditTodoEvent(
+            category: category,
+            description: description,
+            dueDate: dueDate,
+            priority: priority,
+            title: title,
+            uid: uid!,
+          ),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodoBloc, TodoState>(
+          listener: (context, state) async {
+            switch (state) {
+              case AddTodoSuccess():
+                AppSnackbar.showSuccess(context, 'Todo added successfully');
+                await context.read<TodoListCubit>().fetchTodoList();
+                if (!context.mounted) return;
+                final type = context.read<TodoTypeCubit>().state;
+                context.read<TodoListCubit>().fetchFilteredList(type);
+                break;
+              case AddTodoError():
+                AppSnackbar.showError(context, state.message);
+                break;
+              case EditTodoSuccess():
+                AppSnackbar.showSuccess(context, 'Todo edited successfully');
+                await context.read<TodoListCubit>().fetchTodoList();
+                if (!context.mounted) return;
+                final type = context.read<TodoTypeCubit>().state;
+                context.read<TodoListCubit>().fetchFilteredList(type);
+                break;
+              case EditTodoError():
+                AppSnackbar.showError(context, state.message);
+                break;
+              case DeleteTodoSuccess():
+                AppSnackbar.showSuccess(context, 'Todo deleted successfully');
+                await context.read<TodoListCubit>().fetchTodoList();
+                if (!context.mounted) return;
+                final type = context.read<TodoTypeCubit>().state;
+                context.read<TodoListCubit>().fetchFilteredList(type);
+                break;
+              case DeleteTodoError():
+                AppSnackbar.showError(context, state.message);
+                break;
+              case _:
+                break;
+            }
+          },
+        ),
+      ],
+      child: Expanded(
+        child: BlocBuilder<TodoListCubit, TodoListState>(
+          builder: (context, state) {
+            switch (state) {
+              case TodoListLoaded():
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: AppConstants.spacing64,
+                  ),
+                  child: ListView.builder(
+                    itemCount: state.visibleTodos.length,
+                    itemBuilder: (context, index) {
+                      final todo = state.visibleTodos[index];
+                      final timeStamp = todo.dueDate;
+                      final dueDate = timeStamp.toDate();
+                      final formatedDate =
+                          DateFormat(AppConstants.dateFormatShort)
+                              .format(dueDate);
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppConstants.spacing12,
+                          vertical: AppConstants.spacing8,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius:
+                                BorderRadius.circular(AppConstants.radius20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.black.withOpacity(0.05),
+                                blurRadius: AppConstants.radius16,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                            border: Border.all(
+                              color: AppColors.darkGrey.withOpacity(0.08),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: AppConstants.padding16,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Top Row (Priority + Date)
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppConstants.radius12,
+                                        vertical: AppConstants.radius8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _getPriorityColor(todo.priority)
+                                            .withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(
+                                          AppConstants.radius12,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        todo.priority.toUpperCase(),
+                                        style: context.textTheme.labelLarge
+                                            ?.copyWith(
+                                          color:
+                                              _getPriorityColor(todo.priority),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      formatedDate,
+                                      style: context.textTheme.labelLarge
+                                          ?.copyWith(
+                                        color:
+                                            AppColors.darkGrey.withOpacity(0.5),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppConstants.spacing12),
+
+                                // Title
+                                Text(
+                                  todo.title.capitalizeFirst(),
+                                  style: context.textTheme.titleLarge?.copyWith(
+                                    color: AppColors.darkGrey,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(height: AppConstants.spacing8),
+
+                                // Description
+                                Text(
+                                  todo.description.capitalizeFirst(),
+                                  style: context.textTheme.bodyLarge?.copyWith(
+                                    color: AppColors.darkGrey.withOpacity(0.5),
+                                  ),
+                                ),
+                                const SizedBox(height: AppConstants.spacing12),
+
+                                // Subtle divider + Action row (optional)
+                                Divider(
+                                  color: AppColors.darkGrey.withOpacity(0.08),
+                                  height: 1,
+                                ),
+                                const SizedBox(height: AppConstants.spacing12),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          builder: (context) =>
+                                              AddTodoBottomSheet(
+                                            todo: todo,
+                                            saveTodo: editTodo,
+                                          ),
+                                        );
+                                      },
+                                      visualDensity: const VisualDensity(
+                                        horizontal: -4,
+                                        vertical: -4,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      icon: Padding(
+                                        padding: AppConstants.padding8,
+                                        child: Icon(
+                                          Icons.edit_outlined,
+                                          color: AppColors.darkGrey
+                                              .withOpacity(0.5),
+                                          size: AppConstants.icon24,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => deleteTodo(
+                                        context: context,
+                                        uid: todo.id,
+                                      ),
+                                      visualDensity: const VisualDensity(
+                                        horizontal: -4,
+                                        vertical: -4,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      icon: Padding(
+                                        padding: AppConstants.padding8,
+                                        child: Icon(
+                                          Icons.delete_outline,
+                                          color: AppColors.errorRed
+                                              .withOpacity(0.5),
+                                          size: AppConstants.icon24,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              case _:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+            }
+          },
+        ),
+      ),
+    );
   }
 }

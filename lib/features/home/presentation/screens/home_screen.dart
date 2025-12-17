@@ -9,7 +9,6 @@ import 'package:smart_todo/core/utils/app_snackbar.dart';
 import 'package:smart_todo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:smart_todo/features/home/presentation/bloc/todo_bloc.dart';
 import 'package:smart_todo/features/home/presentation/cubit/todo_list_cubit.dart';
-import 'package:smart_todo/features/home/presentation/cubit/todo_type_cubit.dart';
 import 'package:smart_todo/features/home/presentation/widgets/add_todo_bottom_sheet.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_list_view.dart';
 import 'package:smart_todo/features/home/presentation/widgets/todo_type_selector.dart';
@@ -49,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String category,
     required String priority,
     required String dueDate,
+    required BuildContext context,
     String? uid,
   }) async {
     context.pop();
@@ -65,98 +65,64 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            switch (state) {
-              case LogoutSuccess():
-                context.go(AppRoutes.login);
-                break;
-              case LogoutError():
-                AppSnackbar.showError(context, state.message);
-                break;
-              case _:
-                break;
-            }
-          },
-        ),
-        BlocListener<TodoBloc, TodoState>(
-          listener: (context, state) async {
-            switch (state) {
-              case AddTodoSuccess():
-                AppSnackbar.showSuccess(context, 'Todo added successfully');
-                await context.read<TodoListCubit>().fetchTodoList();
-                if (!context.mounted) return;
-                final type = context.read<TodoTypeCubit>().state;
-                context.read<TodoListCubit>().fetchFilteredList(type);
-                break;
-              case AddTodoError():
-                AppSnackbar.showError(context, state.message);
-                break;
-              case EditTodoSuccess():
-                AppSnackbar.showSuccess(context, 'Todo edited successfully');
-                await context.read<TodoListCubit>().fetchTodoList();
-                if (!context.mounted) return;
-                final type = context.read<TodoTypeCubit>().state;
-                context.read<TodoListCubit>().fetchFilteredList(type);
-                break;
-              case EditTodoError():
-                AppSnackbar.showError(context, state.message);
-                break;
-              case _:
-                break;
-            }
-          },
-        ),
-      ],
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          switch (state) {
-            case AuthLoading():
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            case _:
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(context.appStrings.appTitle),
-                  actions: [
-                    IconButton(
-                      onPressed: () => _handleLogout(context),
-                      icon: const Icon(Icons.logout),
-                      color: AppColors.white,
-                    ),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        switch (state) {
+          case LogoutSuccess():
+            context.go(AppRoutes.login);
+            break;
+          case LogoutError():
+            AppSnackbar.showError(context, state.message);
+            break;
+          case _:
+            break;
+        }
+      },
+      builder: (context, state) {
+        switch (state) {
+          case AuthLoading():
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case _:
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(context.appStrings.appTitle),
+                actions: [
+                  IconButton(
+                    onPressed: () => _handleLogout(context),
+                    icon: const Icon(Icons.logout),
+                    color: AppColors.white,
+                  ),
+                ],
+              ),
+              body: const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.spacing8,
+                  vertical: AppConstants.spacing16,
+                ),
+                child: Column(
+                  children: [
+                    TodoTypeSelector(),
+                    TodoListView(),
                   ],
                 ),
-                body: const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppConstants.spacing8,
-                    vertical: AppConstants.spacing16,
-                  ),
-                  child: Column(
-                    children: [
-                      TodoTypeSelector(),
-                      TodoListView(),
-                    ],
-                  ),
-                ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) => AddTodoBottomSheet(
-                        saveTodo: addTodo,
-                      ),
-                    );
-                  },
-                  child: const Icon(Icons.add),
-                ),
-              );
-          }
-        },
-      ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) => AddTodoBottomSheet(
+                      saveTodo: addTodo,
+                    ),
+                  );
+                },
+                child: const Icon(Icons.add),
+              ),
+            );
+        }
+      },
     );
   }
 }

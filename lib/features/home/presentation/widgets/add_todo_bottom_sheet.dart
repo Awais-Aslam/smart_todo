@@ -22,6 +22,7 @@ class AddTodoBottomSheet extends StatefulWidget {
     required String category,
     required String priority,
     required String dueDate,
+    required BuildContext context,
     String? uid,
   }) saveTodo;
   final TodoEntity? todo;
@@ -154,6 +155,7 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
                       category: category!,
                       dueDate: formattedDate!,
                       uid: uid,
+                      context: context,
                     );
                   }
                 },

@@ -8,6 +8,7 @@ import 'package:smart_todo/features/home/domain/entities/todo_entity.dart';
 import 'package:smart_todo/features/home/domain/repositories/notification_repository.dart';
 import 'package:smart_todo/features/home/domain/repositories/todo_repository.dart';
 import 'package:smart_todo/features/home/domain/usecases/add_todo.dart';
+import 'package:smart_todo/features/home/domain/usecases/delete_todo.dart';
 import 'package:smart_todo/features/home/domain/usecases/edit_todo.dart';
 import 'package:smart_todo/features/home/domain/usecases/fetch_todo.dart';
 import 'package:smart_todo/features/home/domain/usecases/send_notification.dart';
@@ -22,6 +23,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final EditTodo editTodo;
   final FetchTodo fetchTodo;
   final SendNotificationUsecase sendNotificationUsecase;
+  final DeleteTodoUsecase deleteTodoUsecase;
 
   TodoBloc({
     required this.todoRepository,
@@ -29,12 +31,29 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   })  : addTodo = AddTodo(todoRepository),
         editTodo = EditTodo(todoRepository),
         fetchTodo = FetchTodo(todoRepository),
+        deleteTodoUsecase = DeleteTodoUsecase(todoRepository),
         sendNotificationUsecase =
             SendNotificationUsecase(notificationRepository),
         super(TodoInitial()) {
     on<AddTodoEvent>(_addTodoEventHandler);
     on<EditTodoEvent>(_editTodoEventHandler);
+    on<DeleteTodoEvent>(_deleteTodoEventHandler);
     on<FetchTodosEvent>(_fetchTodosEventHandler);
+  }
+
+  Future<void> _deleteTodoEventHandler(
+    DeleteTodoEvent event,
+    Emitter<TodoState> emit,
+  ) async {
+    emit(TodoLoading());
+
+    final result = await deleteTodoUsecase(uid: event.uid);
+
+    if (result.isSuccess) {
+      emit(DeleteTodoSuccess());
+    } else {
+      emit(DeleteTodoError(result.error ?? "Failed to Delete Todo"));
+    }
   }
 
   Future<void> _editTodoEventHandler(
@@ -84,7 +103,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         emit(EditTodoError("Todo added, but failed to send notification."));
       }
     } else {
-      emit(EditTodoError(result.error ?? "Failed to add Todo"));
+      emit(EditTodoError(result.error ?? "Failed to Edit Todo"));
     }
   }
 

@@ -37,11 +37,11 @@ android {
     signingConfigs {
         debug {
             storeFile file("${System.getProperty('user.home')}/.android/debug.keystore")
-            storePassword "848484" // Change if you've set a custom password
-            // storePassword "android" // Change if you've set a custom password
+            // storePassword "848484" // Change if you've set a custom password
+            storePassword "android" // Change if you've set a custom password
             keyAlias "AndroidDebugKey"
-            keyPassword "848484" // Change if you've set a custom password
-            // keyPassword "android" // Change if you've set a custom password
+            // keyPassword "848484" // Change if you've set a custom password
+            keyPassword "android" // Change if you've set a custom password
         //     keyAlias keystoreProperties['keyAlias']
         //  keyPassword keystoreProperties['keyPassword']
         //  storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null

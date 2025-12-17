@@ -67,4 +67,14 @@ class TodoRepositoryImpl implements TodoRepository {
       return Result.failure(e.toString());
     }
   }
+
+  @override
+  Future<Result<Unit>> deleteTodo({required String uid}) async {
+    try {
+      await todoRemoteDataSource.deleteTodo(uid: uid);
+      return Result.success(const Unit());
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+  }
 }

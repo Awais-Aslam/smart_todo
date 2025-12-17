@@ -22,6 +22,8 @@ abstract class TodoRemoteDataSource {
     required String uid,
   });
 
+  Future<void> deleteTodo({required String uid});
+
   Future<List<TodoModel>> fetchTodos();
 }
 
@@ -93,6 +95,15 @@ class TodoRemoteDataSourceImpl implements TodoRemoteDataSource {
         'priority': priority,
         'dueDate': Timestamp.fromDate(dateTime),
       });
+    } catch (e) {
+      debugPrint("error : ${e.toString()}");
+    }
+  }
+
+  @override
+  Future<void> deleteTodo({required String uid}) async {
+    try {
+      await firebaseFirestore.collection('todo').doc(uid).delete();
     } catch (e) {
       debugPrint("error : ${e.toString()}");
     }

@@ -79,6 +79,7 @@ class AppConstants {
   static const double breakpoint1200 = 1200.0; // Desktop
 
   // Common Padding
+  static const EdgeInsets padding4 = EdgeInsets.all(spacing4);
   static const EdgeInsets padding8 = EdgeInsets.all(spacing8);
   static const EdgeInsets padding16 = EdgeInsets.all(spacing16);
   static const EdgeInsets padding24 = EdgeInsets.all(spacing24);
@@ -91,6 +92,8 @@ class AppConstants {
   static const EdgeInsets margin32 = EdgeInsets.all(spacing32);
 
   // Horizontal Padding
+  static const EdgeInsets paddingHorizontal4 =
+      EdgeInsets.symmetric(horizontal: spacing4);
   static const EdgeInsets paddingHorizontal8 =
       EdgeInsets.symmetric(horizontal: spacing8);
   static const EdgeInsets paddingHorizontal16 =
@@ -99,6 +102,8 @@ class AppConstants {
       EdgeInsets.symmetric(horizontal: spacing24);
 
   // Vertical Padding
+  static const EdgeInsets paddingVertical4 =
+      EdgeInsets.symmetric(vertical: spacing4);
   static const EdgeInsets paddingVertical8 =
       EdgeInsets.symmetric(vertical: spacing8);
   static const EdgeInsets paddingVertical16 =

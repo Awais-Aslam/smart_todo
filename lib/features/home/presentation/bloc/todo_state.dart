@@ -23,6 +23,14 @@ final class EditTodoError extends TodoState {
   EditTodoError(this.message);
 }
 
+final class DeleteTodoSuccess extends TodoState {}
+
+final class DeleteTodoError extends TodoState {
+  final String message;
+
+  DeleteTodoError(this.message);
+}
+
 final class FetchTodosSuccess extends TodoState {
   final List<TodoEntity> todoList;
 

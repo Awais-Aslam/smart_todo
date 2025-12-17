@@ -19,5 +19,7 @@ abstract class TodoRepository {
     required String uid,
   });
 
+  Future<Result<Unit>> deleteTodo({required String uid});
+
   Future<Result<List<TodoEntity>>> fetchTodos();
 }

@@ -37,4 +37,10 @@ final class EditTodoEvent extends TodoEvent {
   });
 }
 
+final class DeleteTodoEvent extends TodoEvent {
+  final String uid;
+
+  DeleteTodoEvent({required this.uid});
+}
+
 final class FetchTodosEvent extends TodoEvent {}
